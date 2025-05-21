@@ -48,6 +48,7 @@
             <a href="/about">About</a>
             <a href="/products">Products</a>
             <a href="/contact">Contact</a>
+             <a href="/students">Students</a>
         </nav>
     </header>
 

@@ -59,7 +59,9 @@ Route::get('/about', function () {
 Route::get('/contact', function () {
     return view('layout.contact');
 });
+use App\Http\Controllers\StudentController;
 
+Route::get('/students', [StudentController::class, 'index']);
 
 
       
