@@ -1,61 +1,80 @@
 @extends('layout.app')
 
 @section('content')
-    <div class="max-w-2xl mx-auto mt-10">
-        <h1 class="text-2xl font-bold mb-6">Student List</h1>
+    <div class="container mt-5">
+        <h1 class="text-center fw-bold display-6 mb-4 text-primary">Manage Your Tasks</h1>
 
-        {{-- Success message --}}
+        {{-- Success Message --}}
         @if(session('success'))
-            <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
-                {{ session('success') }}
-            </div>
+            <div class="alert alert-success text-center">{{ session('success') }}</div>
         @endif
 
-        {{-- Add Student Form --}}
-        <form action="{{ route('students.store') }}" method="POST" class="mb-6 flex items-center">
+        {{-- Add Task Form --}}
+        <form action="{{ route('students.store') }}" method="POST" class="row g-2 mb-4">
             @csrf
-            <input type="text" name="name" placeholder="Enter student name"
-                   class="flex-1 border border-gray-300 px-4 py-2 rounded mr-2" required>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add Student</button>
+            <div class="col-md-10">
+                <input type="text" name="name" class="form-control form-control-lg" placeholder="Enter new task..." required>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="bi bi-plus-circle me-1"></i> Add Task
+                </button>
+            </div>
         </form>
 
         {{-- Validation Error --}}
         @error('name')
-            <div class="text-red-500 mb-4">{{ $message }}</div>
+            <div class="alert alert-danger">{{ $message }}</div>
         @enderror
 
-        {{-- Student Table --}}
-        <table class="w-full border border-collapse">
-            <thead>
-                <tr class="bg-gray-100 text-left">
-                    <th class="border px-4 py-2">#</th>
-                    <th class="border px-4 py-2">Name</th>
-                    <th class="border px-4 py-2">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($students as $index => $student)
+        {{-- Tasks Table --}}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle border rounded shadow-sm">
+                <thead class="table-light">
                     <tr>
-                        <td class="border px-4 py-2">{{ $index + 1 }}</td>
-                        <td class="border px-4 py-2">{{ $student->name }}</td>
-                        <td class="border px-4 py-2">
-                            <a href="{{ route('students.edit', $student->id) }}"
-                               class="text-blue-500 hover:underline mr-2">Edit</a>
+                        <th>#</th>
+                        <th>Task Name</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($students as $index => $student)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $student->name }}</td>
+                            <td class="text-end">
+                                <a href="{{ route('students.edit', $student->id) }}" class="btn btn-outline-primary btn-sm me-2">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
 
-                            <form action="{{ route('students.destroy', $student->id) }}" method="POST" class="inline"
-                                  onsubmit="return confirm('Are you sure you want to delete this student?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-500 hover:underline">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="3" class="text-center py-4 text-gray-500">No students found.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                                <form action="{{ route('students.destroy', $student->id) }}" method="POST" class="d-inline"
+                                      onsubmit="return confirm('Mark this task as completed?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-outline-success btn-sm">
+                                        <i class="bi bi-check2-circle"></i> Task Completed
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-4">No tasks found. Add one above.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
+
+    <style>
+        table th,
+        table td {
+            vertical-align: middle;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
 @endsection
